@@ -22,14 +22,20 @@ const getContactById = async (contactId) => {
     return  contacts.find((contact) => contact.id === contactId);
 }
 
+const addContact = async (body) => {
+  const db = await readContacts();
+
+  db.push(body);
+
+  await writeContacts(db);
+  return body;
+}
+
 const removeContact = async (contactId) => { 
     const contacts = await readContacts();
     const updatedContacts = contacts.filter((contact) => contact.id !== contactId);
   await writeContacts(updatedContacts);
 }
-
-
-const addContact = async (body) => { }
 
 const updateContact = async (contactId, body) => {}
 
