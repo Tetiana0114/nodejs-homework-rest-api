@@ -5,8 +5,7 @@ const contactsPath = path.resolve(__dirname, "contacts.json");
 
 async function readContacts() {
   const contactsRaw = await fs.readFile(contactsPath);
-  const contacts = JSON.parse(contactsRaw);
-  return contacts;
+  return JSON.parse(contactsRaw);
 }
 
 async function writeContacts(db) {
@@ -15,14 +14,13 @@ async function writeContacts(db) {
 
 
 const listContacts = async () => {
-    const contacts = await readContacts();
-    return contacts;
+    return await readContacts();
 }
+
 
 const getContactById = async (contactId) => { 
     const contacts = await readContacts();
-    const contactById = contacts.find((contact) => contact.id === contactId);
-    return contactById;
+    return  contacts.find((contact) => contact.id === contactId);
 }
 
 const removeContact = async (contactId) => { 
