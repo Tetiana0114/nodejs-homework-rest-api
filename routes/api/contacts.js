@@ -4,6 +4,7 @@ const { listContacts, getContactById, removeContact,  addContact,  updateContact
 
 const router = express.Router();
 
+
 router.get('/', async (req, res, next) => {
   const contacts = await listContacts();
   res.status(200).json(contacts);
@@ -24,24 +25,24 @@ router.post('/', async (req, res, next) => {
   const { name, email, phone } = req.body;
   const body = { id: nanoid(4), name: name, email: email, phone: phone };
 
-  await addContact(body);
+  const newContact = await addContact(body);
 
-  res.status(201).json(body);
+  res.status(201).json(newContact);
 })
-
-// "delete" needs fixing
 
 router.delete('/:contactId', async (req, res, next) => {
   const { contactId } = req.params;
-  const contact = await removeContact(contactId);
+  const contact = await getContactById(contactId);
 
   if (!contact) {
     return res.status(404).json({ message: 'Contact not found' })
   }
 
+  await removeContact(contactId);
+
   return res.status(200).json({ message: 'Contact deleted' });
 })
-
+ 
 
 
 router.put('/:contactId', async (req, res, next) => {
