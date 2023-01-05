@@ -8,8 +8,7 @@ router.get('/', async (req, res, next) => {
   const contacts = await listContacts();
   res.json({
     message: 'Get a list of contacts',
-    status: 'success',
-    code: 200,
+    status: 200,
     data: {
       contacts,
     }
@@ -26,17 +25,26 @@ router.get('/:contactId', async (req, res, next) => {
 
   return res.json({
     message: 'Get contact by id',
-    status: 'success',
-    code: 200,
+    status: 200,
     data: { contact },
 });
 })
 
-router.post('/', async (req, res, next) => {
-  res.json({ message: 'template message' })
+router.delete('/:contactId', async (req, res, next) => {
+  const { contactId } = req.params;
+  const contact = await getContactById(contactId);
+
+  if (!contact) {
+    next(HttpError(404, 'Not found'));
+  }
+  await removeContact(contactId);
+  res.json({
+    message: 'contact deleted',
+    status: 200,
+  });
 })
 
-router.delete('/:contactId', async (req, res, next) => {
+router.post('/', async (req, res, next) => {
   res.json({ message: 'template message' })
 })
 
@@ -44,4 +52,4 @@ router.put('/:contactId', async (req, res, next) => {
   res.json({ message: 'template message' })
 })
 
-module.exports = router
+module.exports = router;
