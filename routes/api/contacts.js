@@ -10,6 +10,7 @@ router.get('/', async (req, res, next) => {
   res.status(200).json(contacts);
 })
 
+
 router.get('/:contactId', async (req, res, next) => {
   const { contactId } = req.params;
   const contact = await getContactById(contactId);
@@ -21,14 +22,24 @@ router.get('/:contactId', async (req, res, next) => {
   return res.status(200).json(contact);
 })
 
+
 router.post('/', async (req, res, next) => {
   const { name, email, phone } = req.body;
   const body = { id: nanoid(4), name: name, email: email, phone: phone };
+  
+  if (!name) {
+    return res.status(400).json({ message: 'name is required field' })
+  } else if (!email) {
+     return res.status(400).json({ message: 'email is required field' })
+  } else if (!phone) {
+     return res.status(400).json({ message: 'phone is required field' })
+  }
 
   const newContact = await addContact(body);
 
-  res.status(201).json(newContact);
+  return res.status(201).json(newContact);
 })
+
 
 router.delete('/:contactId', async (req, res, next) => {
   const { contactId } = req.params;
@@ -43,10 +54,16 @@ router.delete('/:contactId', async (req, res, next) => {
   return res.status(200).json({ message: 'Contact deleted' });
 })
  
+
 router.put('/:contactId', async (req, res, next) => {
   const { contactId } = req.params;
   const { name, email, phone } = req.body;
-  const body = {  name: name, email: email, phone: phone };
+  const body = { name: name, email: email, phone: phone };
+  
+  // if (!req.body) {
+  //   return res.status(404).json({ message: 'missing fields' });
+  // }
+
   const changeContact = await updateContact(contactId, body);
   
   if (!changeContact) {
@@ -55,5 +72,6 @@ router.put('/:contactId', async (req, res, next) => {
 
   return res.status(200).json(changeContact);
 })
+
 
 module.exports = router;
