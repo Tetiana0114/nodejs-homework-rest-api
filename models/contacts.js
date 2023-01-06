@@ -37,7 +37,20 @@ const removeContact = async (contactId) => {
   await writeContacts(updatedContacts);
 }
 
-const updateContact = async (contactId, body) => {}
+const updateContact = async (contactId, body) => {
+  const db = await readContacts();
+  const foundContact = db.find((contact) => contact.id === contactId);
+
+  if (!foundContact) {
+    return;
+  }
+  const changedContact = { ...foundContact, ...body };
+  const index = db.findIndex((contact) => contact.id === contactId);
+  db.splice(index, 1, changedContact);
+
+  await writeContacts(db);
+  return changedContact;
+ }
 
 module.exports = {
   listContacts,

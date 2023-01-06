@@ -43,10 +43,17 @@ router.delete('/:contactId', async (req, res, next) => {
   return res.status(200).json({ message: 'Contact deleted' });
 })
  
-
-
 router.put('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
+  const { contactId } = req.params;
+  const { name, email, phone } = req.body;
+  const body = {  name: name, email: email, phone: phone };
+  const changeContact = await updateContact(contactId, body);
+  
+  if (!changeContact) {
+    return res.status(404).json({ message: 'Contact not found' });
+  }
+
+  return res.status(200).json(changeContact);
 })
 
 module.exports = router;
