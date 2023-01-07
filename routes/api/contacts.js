@@ -16,7 +16,7 @@ router.get('/:contactId', async (req, res, next) => {
   const contact = await getContactById(contactId);
 
   if (!contact) {
-    return res.status(404).json({ message: 'Contact not found' })
+    return res.status(404).json({ message: 'Not found' })
   }
 
   return res.status(200).json(contact);
@@ -46,7 +46,7 @@ router.delete('/:contactId', async (req, res, next) => {
   const contact = await getContactById(contactId);
 
   if (!contact) {
-    return res.status(404).json({ message: 'Contact not found' })
+    return res.status(404).json({ message: 'Not found' })
   }
 
   await removeContact(contactId);
@@ -58,20 +58,18 @@ router.delete('/:contactId', async (req, res, next) => {
 router.put('/:contactId', async (req, res, next) => {
   const { contactId } = req.params;
   const { name, email, phone } = req.body;
-  const body = { name: name, email: email, phone: phone };
-  
-  // if (!req.body) {
-  //   return res.status(404).json({ message: 'missing fields' });
-  // }
 
-  const changeContact = await updateContact(contactId, body);
+  if(!req.body || !name || !email || !phone) {
+    return res.status(400).json({ message: 'Missing fields: name, email and phone!' })
+  }
+ 
+  const changeContact = await updateContact(contactId, req.body);
   
   if (!changeContact) {
-    return res.status(404).json({ message: 'Contact not found' });
+    return res.status(404).json({ message: 'Not found' });
   }
 
   return res.status(200).json(changeContact);
 })
-
 
 module.exports = router;
