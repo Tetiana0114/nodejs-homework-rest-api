@@ -3,39 +3,46 @@ const { listContacts, getContactById, removeContact, addContact, updateContact }
 
 
 async function getContacts(req, res, next) {
+  try {
   const contacts = await listContacts();
   res.status(200).json(contacts);
+  } catch (error) {
+    next(error);
+  }
 }
 
 async function getContact(req, res, next) {
+  try {
   const { contactId } = req.params;
   const contact = await getContactById(contactId);
 
   if (!contact) {
     return res.status(404).json({ message: 'Not found' })
   }
-
-  return res.status(200).json(contact);
+    return res.status(200).json(contact);
+    
+  } catch (error) {
+    next(error);
+  }
 }
 
+
 async function createNewContact(req, res, next) {
+  try {
   const { name, email, phone } = req.body;
   const body = { id: nanoid(4), name: name, email: email, phone: phone };
-  
-  if (!name) {
-    return res.status(400).json({ message: 'name is required field' })
-  } else if (!email) {
-     return res.status(400).json({ message: 'email is required field' })
-  } else if (!phone) {
-     return res.status(400).json({ message: 'phone is required field' })
-  }
 
   const newContact = await addContact(body);
 
   return res.status(201).json(newContact);
+  } catch (error) {
+    next(error);
+  }
 }
 
+
 async function deleteContact(req, res, next) {
+  try {
   const { contactId } = req.params;
   const contact = await getContactById(contactId);
 
@@ -45,22 +52,26 @@ async function deleteContact(req, res, next) {
 
   await removeContact(contactId);
   return res.status(200).json({ message: 'Contact deleted' });
+  } catch (error) {
+    next(error);
+  }
 }
 
-async function changeContact(req, res, next) {
-  const { contactId } = req.params;
-  const { name, email, phone } = req.body;
 
-  if(!req.body || !name || !email || !phone) {
-    return res.status(400).json({ message: 'Missing fields: name, email and phone!' })
-  }
- 
+async function changeContact(req, res, next) {
+  try {
+  const { contactId } = req.params;
+
   const changeContact = await updateContact(contactId, req.body);
   if (!changeContact) {
     return res.status(404).json({ message: 'Not found' });
   }
   return res.status(200).json(changeContact);
+  } catch (error) {
+    next(error);
+  }
 }
+
 
 module.exports = {
     getContacts,

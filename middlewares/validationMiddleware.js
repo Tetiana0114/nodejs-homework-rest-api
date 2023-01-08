@@ -1,25 +1,14 @@
-const Joi = require('joi');
+const addContactsValidation = (schema) => {
+    return (req, res, next) => {
+        const { error } = schema.validate(req.body);
 
-const useValidation = (req, res, next) => {
-const schema = Joi.object({
-  name: Joi.string()
-      .min(3)
-      .max(20)
-      .required(),
-  email: Joi.string()
-      .required(),
-  phone: Joi.string()
-      .min(6)
-      .max(16)
-      .required(),
-});
-    
-  const result = schema.validate(req.body);
-  if (result.error) {
-    return res.status(400).json({ status: result.error.details })
+        if (error) {
+            return res.status(400).json({ status: error.details });
+        }
+        return next();
     }
-    next()
 }
+
 module.exports = {
-    useValidation,
+    addContactsValidation,
 }
