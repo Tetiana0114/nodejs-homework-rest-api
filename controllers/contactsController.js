@@ -1,10 +1,9 @@
-const { nanoid } = require('nanoid');
-const { listContacts, getContactById, removeContact, addContact, updateContact } = require("../models/contacts");
+const { Contact } = require('../models/contactsModel');
 
 
 async function getContacts(req, res, next) {
   try {
-  const contacts = await listContacts();
+  const contacts = await Contact.find();
   res.status(200).json(contacts);
   } catch (error) {
     next(error);
@@ -14,7 +13,7 @@ async function getContacts(req, res, next) {
 async function getContact(req, res, next) {
   try {
   const { contactId } = req.params;
-  const contact = await getContactById(contactId);
+  const contact = await Contact.findById(contactId);
 
   if (!contact) {
     return res.status(404).json({ message: 'Not found' })
@@ -30,9 +29,9 @@ async function getContact(req, res, next) {
 async function createNewContact(req, res, next) {
   try {
   const { name, email, phone } = req.body;
-  const body = { id: nanoid(4), name: name, email: email, phone: phone };
+  const body = {  name: name, email: email, phone: phone };
 
-  const newContact = await addContact(body);
+  const newContact = await Contact.create(body);
 
   return res.status(201).json(newContact);
   } catch (error) {
@@ -44,13 +43,13 @@ async function createNewContact(req, res, next) {
 async function deleteContact(req, res, next) {
   try {
   const { contactId } = req.params;
-  const contact = await getContactById(contactId);
+  const contact = await Contact.findById(contactId);
 
   if (!contact) {
     return res.status(404).json({ message: 'Not found' })
   }
 
-  await removeContact(contactId);
+  await Contact.findByIdAndRemove(contactId);
   return res.status(200).json({ message: 'Contact deleted' });
   } catch (error) {
     next(error);
@@ -62,7 +61,7 @@ async function changeContact(req, res, next) {
   try {
   const { contactId } = req.params;
 
-  const changeContact = await updateContact(contactId, req.body);
+  const changeContact = await Contact.findByIdAndUpdate(contactId, req.body);
   if (!changeContact) {
     return res.status(404).json({ message: 'Not found' });
   }
