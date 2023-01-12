@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
+const dotenv = require("dotenv");
 const app = require('./app');
 
-const dotenv = require("dotenv");
 
 dotenv.config();
 mongoose.set("strictQuery", false);
@@ -14,7 +14,7 @@ async function main() {
     console.log("Database connection successful!");
 
     app.listen(3000, () => {
-  console.log("Server running. Use our API on port: 3000")
+    console.log("Server running. Use our API on port: 3000")
     })
     
   } catch (error) {
@@ -22,5 +22,4 @@ async function main() {
     process.exit(1);
   }
 }
-
 main();
