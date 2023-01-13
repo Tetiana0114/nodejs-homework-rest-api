@@ -19,7 +19,13 @@ app.use((req, res) => {
 })
 
 app.use((err, req, res, next) => {
-  res.status(500).json({ message: err.message })
-})
+  if (err.message.includes("Cast to ObjectId failed for value")) {
+    return res.status(400).json({
+      message: "id is invalid",
+    });
+  }
 
-module.exports = app
+  return res.status(500).json({ message: err.message });
+});
+
+module.exports = app;
