@@ -11,6 +11,7 @@ const addContactSchema = Joi.object({
         .min(6)
         .max(16)
         .required(),
+    favorite: Joi.boolean()
 }).required();
 
 const updateContactSchema = Joi.object({

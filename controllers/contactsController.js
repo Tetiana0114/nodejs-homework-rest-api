@@ -28,8 +28,8 @@ async function getContact(req, res, next) {
 
 async function createNewContact(req, res, next) {
   try {
-  const { name, email, phone } = req.body;
-  const body = {  name: name, email: email, phone: phone };
+  const { name, email, phone, favorite } = req.body;
+  const body = {  name: name, email: email, phone: phone, favorite };
 
   const newContact = await Contact.create(body);
 
@@ -61,7 +61,7 @@ async function changeContact(req, res, next) {
   try {
   const { contactId } = req.params;
 
-  const changeContact = await Contact.findByIdAndUpdate(contactId, req.body);
+  const changeContact = await Contact.findByIdAndUpdate(contactId, req.body, { new: true });
   if (!changeContact) {
     return res.status(404).json({ message: 'Not found' });
   }
@@ -77,7 +77,7 @@ async function updateStatusContact(req, res, next) {
   const { contactId } = req.params;
   const { favorite } = req.body;
 
-  const result = await Contact.findByIdAndUpdate(contactId, { favorite });
+    const result = await Contact.findByIdAndUpdate(contactId, { favorite }, { new: true });
 
   if (!result) {
     return res.status(404).json({ message: 'Not found' });
@@ -86,8 +86,8 @@ async function updateStatusContact(req, res, next) {
   } catch (error) {
     next(error);
   }
- 
 }
+
 
 module.exports = {
     getContacts,
