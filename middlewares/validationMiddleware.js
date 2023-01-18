@@ -1,15 +1,4 @@
-const addContactsValidation = (schema) => {
-    return (req, res, next) => {
-        const { error } = schema.validate(req.body);
-
-        if (error) {
-            return res.status(400).json({ status: error.details });
-        }
-        return next();
-    }
-}
-
-const addAuthValidation = (schema) => {
+const addBodyValidation = (schema) => {
     return (req, res, next) => {
         const { error } = schema.validate(req.body);
 
@@ -21,6 +10,5 @@ const addAuthValidation = (schema) => {
 }
 
 module.exports = {
-    addContactsValidation,
-    addAuthValidation,
+    addBodyValidation,
 }
