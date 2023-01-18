@@ -28,6 +28,39 @@ async function register(req, res, next) {
   }   
 }
 
+
+
+async function login(req, res, next) {
+
+  try {
+  const { email, password } = req.body;
+
+  const storedUser = await User.findOne({
+    email,
+  });
+    
+  if (!storedUser) {
+    return res.status(401).json({ message: 'Email or password is wrong' });
+  }
+
+  const isPasswordValid = await bcrypt.compare(password, storedUser.password);
+
+  if (!isPasswordValid) {
+    return res.status(401).json({ message: 'Email or password is wrong' });
+  }
+
+  return res.json({
+    data: {
+      token: "<TOKEN>",
+    },
+  });
+    
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   register,
+  login,
 };
