@@ -1,5 +1,7 @@
 const { User } = require("../models/usersModel");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+
 
 async function register(req, res, next) {
  
@@ -29,12 +31,10 @@ async function register(req, res, next) {
 }
 
 
-
 async function login(req, res, next) {
 
   try {
   const { email, password } = req.body;
-
   const storedUser = await User.findOne({
     email,
   });
@@ -47,20 +47,33 @@ async function login(req, res, next) {
 
   if (!isPasswordValid) {
     return res.status(401).json({ message: 'Email or password is wrong' });
-  }
-
-  return res.json({
-    data: {
-      token: "<TOKEN>",
-    },
-  });
+    }
     
+    const payload = { id: storedUser._id };
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1h" });
+    
+    return res.status(200).json({
+      token: token,
+      user: { email, subscription: storedUser.subscription }
+    })
+
   } catch (error) {
     next(error);
   }
 }
 
+
+async function logout(req, res, next) {
+  try {
+    ///////
+  } catch (error) {
+    next(error);
+  }   
+}
+
+
 module.exports = {
   register,
   login,
+  logout,
 };
