@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.post("/register", addBodyValidation(registerSchema), register);
 router.post("/login", addBodyValidation(loginSchema), login);
-router.get("/logout", authValidation, logout);
+router.post("/logout", authValidation, logout);
 router.get("/current", authValidation, getCurrentUser);
 
 module.exports = router;

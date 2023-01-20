@@ -65,7 +65,12 @@ async function login(req, res, next) {
 
 async function logout(req, res, next) {
   try {
-    ///////
+    const { _id } = req.user;
+
+    await User.findByIdAndUpdate(_id, { token: "" });
+
+    return res.status(204).send();
+
   } catch (error) {
     next(error);
   }   
