@@ -15,15 +15,19 @@ async function authValidation(req, res, next) {
     try {
         const { id } = jwt.verify(token, process.env.JWT_SECRET);
         const user = await User.findById(id);
+        if (!user) {
+             return res.status(401).json({ message: "Not authorized" });
+        }
+
         req.user = user;
+        next();
          
   } catch (error) {
         if (error.name === "TokenExpiredError" || error.name === "JsonWebTokenError") {
         return res.status(401).json({ message: "Not authorized" });
         }
-        throw error;
+        next(error);
     }
-    next();
 };
 
 module.exports = {
