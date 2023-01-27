@@ -7,7 +7,7 @@ const { registerSchema, loginSchema } = require('../../schemas/authSchemas');
 
 const { register, login, logout } = require('../../controllers/authController');
 const { getCurrentUser } = require('../../controllers/userController');
-const { uploadAvatar } = require('../../controllers/loadingControllers');
+const { uploadAvatar } = require('../../controllers/loadingController');
 
 const router = express.Router();
 
