@@ -1,18 +1,23 @@
 const { User } = require("../models/usersModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const gravatar = require("gravatar");
 
 async function register(req, res, next) {
   try {
     const { email, password } = req.body;
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
+
+    const avatarURL = gravatar.url(email);
+
     const newUser = await User.create({
+      avatarURL,
       email,
       password: hashedPassword,
     });
 
-    return res.status(201).json({ user: { email, subscription: newUser.subscription } });
+    return res.status(201).json({ user: { avatarURL, email, subscription: newUser.subscription } });
 
   } catch (error) {
     if (error.message.includes("E11000 duplicate key error")) {
