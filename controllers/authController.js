@@ -2,6 +2,9 @@ const { User } = require("../models/usersModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const gravatar = require("gravatar");
+const { v4 } = require("uuid");
+const { sendMail } = require("../helpers/index");
+
 
 async function register(req, res, next) {
   try {
@@ -10,11 +13,19 @@ async function register(req, res, next) {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const avatarURL = gravatar.url(email);
+    const verificationToken = v4();
 
     const newUser = await User.create({
       avatarURL,
       email,
       password: hashedPassword,
+      verificationToken,
+    });
+
+    await sendMail({
+    to: email,
+    subject: "Please confirm your email!",
+    html: `<a href="localhost:3000/api/users/verify/${verificationToken}">Confirm your email</a>`,
     });
 
     return res.status(201).json({ user: { avatarURL, email, subscription: newUser.subscription } });
