@@ -19,7 +19,13 @@ const loginSchema = Joi.object({
         .required(),
 }).required();
 
+const verificationSchema = Joi.object({
+    email: Joi.string()
+        .required(),
+}).required();
+
 module.exports = {
     registerSchema,
     loginSchema,
+    verificationSchema,
 };

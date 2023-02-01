@@ -1,4 +1,5 @@
 const { User } = require("../models/usersModel");
+const { sendMail } = require("../helpers/index");
 
 async function getCurrentUser(req, res, next) {
   try {
@@ -36,10 +37,33 @@ async function verifyEmail(req, res, next) {
   } catch (error) {
     next(error);
   }
+}
 
+async function repeatVerification(req, res, next) {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({
+    email,
+  });
+    if (!user.verify) {
+      await sendMail({
+      to: email,
+      subject: "Please confirm your email!",
+      html: `<a href="localhost:3000/api/users/verify/${user.verificationToken}">Confirm your email</a>`,
+      });
+
+    return res.status(200).json({ message: 'Verification email sent' });  
+    }
+
+    return res.status(400).json({ message: 'Verification has already been passed' });
+    
+  } catch (error) {
+    next(error);
+  }
 }
 
 module.exports = {
   getCurrentUser,
   verifyEmail,
+  repeatVerification,
 };
