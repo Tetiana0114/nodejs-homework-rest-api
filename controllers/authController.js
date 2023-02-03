@@ -5,6 +5,7 @@ const gravatar = require("gravatar");
 const { v4 } = require("uuid");
 const { sendMail } = require("../helpers/index");
 
+const { JWT_SECRET } = process.env;
 
 async function register(req, res, next) {
   try {
@@ -61,7 +62,7 @@ async function login(req, res, next) {
     }
 
     const payload = { id: storedUser._id };
-    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1h" });
+    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "1h" });
     
     return res.status(200).json({
       token: token,
